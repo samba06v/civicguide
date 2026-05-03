@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaKey, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
+import { FaKey, FaCheck, FaExclamationTriangle, FaTrash } from 'react-icons/fa';
 
 export default function ApiConfig({ apiKey, setApiKey }) {
   const [inputKey, setInputKey] = useState(apiKey);
@@ -7,9 +7,14 @@ export default function ApiConfig({ apiKey, setApiKey }) {
 
   const handleSave = (e) => {
     e.preventDefault();
-    setApiKey(inputKey);
+    setApiKey(inputKey.trim());
     setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    window.setTimeout(() => setIsSaved(false), 3000);
+  };
+
+  const handleClear = () => {
+    setInputKey('');
+    setApiKey('');
   };
 
   return (
@@ -19,106 +24,24 @@ export default function ApiConfig({ apiKey, setApiKey }) {
           <FaKey color="var(--accent-color)" />
           <h3>AI Configuration</h3>
         </div>
-        <p className="config-desc">
-          Enter your Google Gemini API key to enable the smart assistant. Your key is only stored locally in your browser session.
-        </p>
+        <p className="config-desc">Enter your Google Gemini API key. It is stored only in your browser localStorage.</p>
       </div>
 
       <form onSubmit={handleSave} className="config-form">
         <div className="input-wrapper">
-          <input
-            type="password"
-            className="input-field api-input"
-            placeholder="AIzaSy..."
-            value={inputKey}
-            onChange={(e) => setInputKey(e.target.value)}
-          />
+          <label htmlFor="gemini-key" className="sr-only">Gemini API key</label>
+          <input id="gemini-key" type="password" className="input-field api-input" placeholder="AIzaSy..." value={inputKey} onChange={(e) => setInputKey(e.target.value)} autoComplete="off" />
         </div>
-        <button type="submit" className="btn config-btn">
-          {isSaved ? <FaCheck /> : 'Save Key'}
-        </button>
+        <button type="submit" className="btn config-btn">{isSaved ? <FaCheck /> : 'Save Key'}</button>
+        <button type="button" className="btn btn-secondary config-btn" onClick={handleClear} aria-label="Clear saved key"><FaTrash /> Clear</button>
       </form>
 
       {!apiKey && (
         <div className="api-warning">
           <FaExclamationTriangle color="#fbbf24" />
-          <span>Assistant is running in offline template mode.</span>
+          <span>Assistant is running in offline educational mode.</span>
         </div>
       )}
-
-      <style>{`
-        .api-config {
-          margin-bottom: 2rem;
-          padding: 1.5rem 2rem;
-        }
-
-        .config-header {
-          margin-bottom: 1rem;
-        }
-
-        .config-title {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .config-title h3 {
-          margin: 0;
-          font-size: 1.1rem;
-        }
-
-        .config-desc {
-          color: #94a3b8;
-          font-size: 0.85rem;
-          margin: 0;
-        }
-
-        .config-form {
-          display: flex;
-          gap: 1rem;
-          align-items: center;
-        }
-
-        .input-wrapper {
-          flex-grow: 1;
-          max-width: 400px;
-        }
-
-        .api-input {
-          width: 100%;
-          font-family: monospace;
-          letter-spacing: 0.1em;
-        }
-
-        .config-btn {
-          white-space: nowrap;
-          min-width: 120px;
-        }
-
-        .api-warning {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-top: 1rem;
-          font-size: 0.85rem;
-          color: #fbbf24;
-          background: rgba(251, 191, 36, 0.1);
-          padding: 0.5rem 1rem;
-          border-radius: 8px;
-          display: inline-flex;
-        }
-        
-        @media (max-width: 640px) {
-          .config-form {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          .input-wrapper {
-            max-width: 100%;
-          }
-        }
-      `}</style>
     </div>
   );
 }
