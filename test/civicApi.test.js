@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildVoterInfoUrl, normalizeVoterInfo } from '../src/utils/civicApi.js';
+import { buildPollingMapLink, buildVoterInfoUrl, normalizeVoterInfo } from '../src/utils/civicApi.js';
 
 test('buildVoterInfoUrl encodes address and key', () => {
   const url = buildVoterInfoUrl('1600 Pennsylvania Ave NW, Washington, DC', 'abc123');
@@ -9,9 +9,16 @@ test('buildVoterInfoUrl encodes address and key', () => {
   assert.match(url, /key=abc123/);
 });
 
+test('buildPollingMapLink creates Google Maps link', () => {
+  const mapLink = buildPollingMapLink('1 Infinite Loop, Cupertino');
+  assert.match(mapLink, /google\.com\/maps\/search/);
+  assert.match(mapLink, /1%20Infinite%20Loop%2C%20Cupertino/);
+});
+
 test('normalizeVoterInfo returns stable defaults', () => {
   const result = normalizeVoterInfo({});
   assert.equal(result.electionName, 'Election details unavailable');
   assert.equal(result.electionDay, 'Unknown date');
   assert.deepEqual(result.pollingLocations, []);
+  assert.deepEqual(result.electionOfficials, []);
 });
