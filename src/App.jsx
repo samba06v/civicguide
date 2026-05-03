@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Timeline from './components/Timeline';
 import AssistantChat from './components/AssistantChat';
 import ApiConfig from './components/ApiConfig';
+import VoterInfoLookup from './components/VoterInfoLookup';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => window.localStorage.getItem('civicguide_gemini_api_key') || '');
@@ -35,6 +36,8 @@ function App() {
           <AssistantChat apiKey={apiKey} />
         </section>
       </main>
+
+      <VoterInfoLookup apiKey={apiKey} />
 
       <section className="glass-panel" style={{ marginTop: '1.5rem' }}>
         <h2 style={{ marginBottom: '0.75rem' }}>Official Election Resources</h2>
